@@ -1,10 +1,9 @@
 'use client';
 import React, { useRef } from 'react';
-import Service from './ServicesSection';
-import { motion, useScroll } from 'framer-motion';
+import Service from './ServicesSection'; // Assuming ServicesSection is the correct component name
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 // --- Project Data ---
-// Using the project data structure you provided
 const services = [
   {
     title: "Software Development",
@@ -27,12 +26,31 @@ const services = [
 
 const OurServices = () => {
   const containerRef = useRef(null);
-  
-  // Initialize scroll functionality
-  useScroll({
+
+  const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
+
+  // Define useTransform calls individually at the top level
+  const scaleTransform1 = useTransform(
+    scrollYProgress,
+    [0, 1 / services.length],
+    [1, 0.85]
+  );
+  const scaleTransform2 = useTransform(
+    scrollYProgress,
+    [1 / services.length, 2 / services.length],
+    [1, 0.85]
+  );
+  const scaleTransform3 = useTransform(
+    scrollYProgress,
+    [2 / services.length, 3 / services.length],
+    [1, 0.85]
+  );
+
+  // Store transforms in an array for easier access in the map
+  const scaleTransforms = [scaleTransform1, scaleTransform2, scaleTransform3];
 
   return (
     <div className="p-5">
@@ -47,50 +65,33 @@ const OurServices = () => {
       </div>
 
       {/* STACKED PINNING CONTAINER */}
-      <div 
-        ref={containerRef} 
+      <div
+        ref={containerRef}
         className="relative"
         style={{ height: `${(services.length * 100) - 20}vh` }}
       >
-        {services.map((service, index) => {
-          // Calculate scale based on index position
-        //  const sectionHeight = 1 / services.length;
-          
-          // Calculate scale based on section position
-          // This is a simplified version that doesn't use useTransform
-          const scale = 1 - (0.15 * (index / (services.length - 1)));
-          
-          return (
+        {services.map((service, index) => (
             <motion.div
               key={index}
               className="sticky top-0 w-full origin-center"
               style={{
-                scale: scale,
-                opacity: 1 - (0.2 * index / services.length),
-                // Reverse the z-index order so later items stack on top
+                scale: scaleTransforms[index],
                 zIndex: index,
-                // Add padding to create space between items
-                paddingTop: `${index * 2}vh`,
               }}
             >
-              {/* Container to center content within the full-screen sticky area */}
               <div className="h-fit w-full flex items-center justify-center">
                 <Service
                   number={`0${index + 1}`}
                   title={service.title}
                   description={service.description}
-                  dangerousHTML={true}
+                  dangerousHTML={true} // Assuming this prop exists and is needed
                   imageUrl={service.image}
                 />
               </div>
             </motion.div>
-          );
-        })}
+        ))}
       </div> {/* End STACKED PINNING CONTAINER */}
-      
-      {/* Content AFTER the sticky sections */}
-      {/* Added margin-top for spacing */}
-      
+
     </div>
     </div>
     </div>

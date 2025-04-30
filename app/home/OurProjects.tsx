@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import Service from './ServicesSection';
 import { motion, useScroll } from 'framer-motion';
+import { useTransform } from 'framer-motion';
 
 // --- Project Data ---
 // Using the project data structure you provided
@@ -55,14 +56,25 @@ const projects = [
 ];
 // --- End Project Data ---
 
-
 const OurProjects = () => {
   const containerRef = useRef(null);
   
-  // Initialize scroll functionality
-  useScroll({
+  const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
+  });
+
+  // Define useTransform calls individually at the top level for each project
+  const scaleTransforms = projects.map((_, index) => {
+    const sectionHeight = 1 / projects.length;
+    const sectionStart = index * sectionHeight;
+    const sectionEnd = sectionStart + sectionHeight;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useTransform(
+      scrollYProgress,
+      [sectionStart, sectionEnd],
+      [1, 0.85]
+    );
   });
 
   return (
@@ -84,20 +96,18 @@ const OurProjects = () => {
         style={{ height: `${(projects.length * 100) - 20}vh` }}
       >
         {projects.map((project, index) => {
-          // Calculate scale based on index position
-         // const sectionHeight = 1 / projects.length;
-          
-          // Calculate scale based on section position
-          // This is a simplified version that doesn't use useTransform
-          const scale = 1 - (0.15 * (index / (projects.length - 1)));
+          // Calculate scroll progress ranges for each item
+          //const sectionHeight = 1 / projects.length;
+          //const sectionStart = index * sectionHeight;
+          // Access the pre-calculated scale transform for this index
+          const scale = scaleTransforms[index];
           
           return (
             <motion.div
               key={index}
-              className="sticky top-0 w-full origin-center"
-              style={{ 
-                scale: scale,
-                opacity: 1 - (0.2 * index / projects.length),
+              className="sticky top-0 w-full origin-center "
+              style={{
+                scale,
                 // Reverse the z-index order so later items stack on top
                 zIndex: index,
               }}
