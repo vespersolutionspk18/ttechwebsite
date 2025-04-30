@@ -21,6 +21,7 @@ export default function Home() {
     <OurServicesSection />
     <FutureNowSection />
     <div id="projects">
+      
     <OurProjects />
     </div>
     <FaqSection />
