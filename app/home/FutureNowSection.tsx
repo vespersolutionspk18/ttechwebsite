@@ -13,7 +13,7 @@ const FutureNowSection = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ transform: 'scale(1.35)' }}
-          src="/assets/particles.mp4"
+          src="/assets/particles.m4v"
         />
         <div className="absolute inset-0 z-10 flex items-center justify-center">
           <FutureMarquee />
