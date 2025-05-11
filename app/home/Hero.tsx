@@ -1,14 +1,18 @@
 import React from 'react'
 import Header from '../components/Header'
-import Spline from '@splinetool/react-spline'
 import Button from '../components/Button'
 
 const Hero = () => {
   return (
     <div className="relative m-5 rounded-2xl overflow-hidden h-[95vh]">
-      <div className="absolute inset-0 z-0 scale-150 transform-gpu">
-        <Spline
-          scene="https://prod.spline.design/9C1axri5-29vcHh5/scene.splinecode"
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover transform-gpu"
+          src="/assets/herovid.m4v"
         />
       </div>
       <div className="relative h-full z-10 flex flex-col justify-between p-5">
